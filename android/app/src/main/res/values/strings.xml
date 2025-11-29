@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SiDing</string>
+    <string name="title_activity_main">SiDing</string>
+    <string name="package_name">com.idatagear.siding</string>
+    <string name="custom_url_scheme">com.idatagear.siding</string>
+</resources>
