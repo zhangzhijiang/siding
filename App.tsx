@@ -16,15 +16,14 @@ import {
   getBestAIMove
 } from './services/gameLogic';
 import Board from './components/Board';
+import AdSense from './components/AdSense';
 import { 
   RefreshCw, 
   Undo2, 
   Cpu, 
   User, 
   Info, 
-  ChevronRight, 
-  ChevronDown,
-  ChevronUp,
+  X,
   Trophy 
 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -42,7 +41,7 @@ const App: React.FC = () => {
   // Settings
   const [isAIEnabled, setIsAIEnabled] = useState<boolean>(true);
   const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
-  const [showRules, setShowRules] = useState<boolean>(true);
+  const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
   const [rulesLanguage, setRulesLanguage] = useState<'en' | 'zh'>('en');
 
   // Stats
@@ -178,51 +177,140 @@ const App: React.FC = () => {
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl"></div>
       </div>
 
-      <header className="mb-4 text-center z-10 flex-shrink-0">
-        <h1 className="text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-2 tracking-tight">
-          SiDing <span className="text-slate-500 text-xl lg:text-2xl font-normal ml-2">四顶</span>
-        </h1>
+      <header className="mb-4 text-center z-10 flex-shrink-0 relative w-full">
+        <div className="flex items-center justify-center gap-4">
+          <h1 className="text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-2 tracking-tight">
+            SiDing <span className="text-slate-500 text-xl lg:text-2xl font-normal ml-2">四顶</span>
+          </h1>
+          <button
+            onClick={() => setShowRulesModal(true)}
+            className="mb-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 text-slate-300 transition-colors"
+            title="Play Rules"
+          >
+            <Info size={20} />
+          </button>
+        </div>
         <p className="text-slate-400 text-xs lg:text-sm">Strategic 4x4 Board Game</p>
       </header>
 
       {/* Main Game Layout */}
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start z-10 w-full max-w-7xl mx-auto flex-1 min-h-0 max-h-full overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-center justify-center z-10 w-full max-w-7xl mx-auto flex-1 min-h-0 max-h-full overflow-hidden">
         
-        {/* Left: Rules Panel (Merged English/Chinese) */}
-        <div className="w-full lg:w-80 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 lg:p-6 backdrop-blur-sm order-2 lg:order-1 flex flex-col h-full max-h-full flex-shrink-0">
-          <div className="flex items-center justify-between mb-4 flex-shrink-0">
-            <button 
-              onClick={() => setShowRules(!showRules)}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <h3 className="font-bold text-slate-200 flex items-center gap-2">
-                <Info size={18} /> {rulesLanguage === 'en' ? 'Play Rules' : '玩法规则'}
-              </h3>
-              {showRules ? (
-                <ChevronUp size={20} className="text-slate-400" />
-              ) : (
-                <ChevronDown size={20} className="text-slate-400" />
-              )}
-            </button>
-            <button
-              onClick={() => setRulesLanguage(rulesLanguage === 'en' ? 'zh' : 'en')}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 border border-slate-600 transition-colors"
-            >
-              {rulesLanguage === 'en' ? '中文' : 'EN'}
-            </button>
+        {/* Left: AdSense Ad */}
+        <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
+          <div className="w-full">
+            <AdSense 
+              adFormat="vertical"
+              fullWidthResponsive={true}
+              className="min-h-[250px]"
+            />
+          </div>
+        </div>
+
+        {/* Center: Game Board area */}
+        <div className="flex flex-col items-center w-full max-w-md flex-shrink-0 min-h-0">
+          <div className="flex justify-between w-full max-w-sm mb-4 px-2">
+            <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
+              currentPlayer === 'B' ? "bg-sky-900/30 border-sky-500/50 text-sky-200" : "border-transparent text-slate-500 opacity-60")}>
+              <Cpu size={18} />
+              <span className="font-semibold">{isAIEnabled ? "AI (Blue)" : "P2 (Blue)"}</span>
+              <span className="bg-slate-800 px-2 rounded ml-1 text-xs">{pieceCounts.B}</span>
+            </div>
+            
+            <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
+              currentPlayer === 'A' ? "bg-rose-900/30 border-rose-500/50 text-rose-200" : "border-transparent text-slate-500 opacity-60")}>
+              <span className="bg-slate-800 px-2 rounded mr-1 text-xs">{pieceCounts.A}</span>
+              <span className="font-semibold">You (Red)</span>
+              <User size={18} />
+            </div>
           </div>
 
+          <Board 
+            board={board} 
+            currentPlayer={currentPlayer}
+            selectedPos={selectedPos}
+            validMoves={validMoves}
+            onCellClick={handleCellClick}
+            isAiThinking={isAiThinking}
+            lastMove={lastMove}
+          />
+
+          {/* Controls */}
+          <div className="flex gap-4 mt-8">
+             <button 
+              onClick={resetGame}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
+            >
+              <RefreshCw size={16} /> Restart
+            </button>
+            <button 
+              onClick={undoMove}
+              disabled={history.length === 0 || winner !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
+            >
+              <Undo2 size={16} /> Undo
+            </button>
+            <button 
+              onClick={() => setIsAIEnabled(!isAIEnabled)}
+              className={clsx(
+                "flex items-center gap-2 px-4 py-2 rounded-lg transition-colors border font-medium text-sm",
+                isAIEnabled 
+                  ? "bg-indigo-900/40 border-indigo-500/50 text-indigo-200" 
+                  : "bg-slate-800 border-slate-700 text-slate-400"
+              )}
+            >
+              <Cpu size={16} /> {isAIEnabled ? "AI: On" : "AI: Off"}
+            </button>
+          </div>
+        </div>
+
+        {/* Right: AdSense Ad */}
+        <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
+          <div className="w-full">
+            <AdSense 
+              adFormat="vertical"
+              fullWidthResponsive={true}
+              className="min-h-[250px]"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      {/* Rules Modal */}
+      {showRulesModal && (
+        <div 
+          className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowRulesModal(false)}
+        >
           <div 
-            className={clsx(
-              "transition-all duration-300 ease-in-out flex-1 min-h-0 overflow-hidden",
-              showRules ? "opacity-100" : "opacity-0 max-h-0"
-            )}
-            style={showRules ? { maxHeight: '100%' } : undefined}
+            className="bg-slate-800 border border-slate-700/50 rounded-xl p-6 lg:p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className={clsx(
-              "space-y-4 text-sm text-slate-300 pr-2 pb-4 custom-scrollbar overflow-y-auto",
-              showRules ? "h-full max-h-full" : "h-0 overflow-hidden"
-            )}>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between mb-6 flex-shrink-0">
+              <h2 className="text-2xl font-bold text-slate-200 flex items-center gap-2">
+                <Info size={24} /> {rulesLanguage === 'en' ? 'Play Rules' : '玩法规则'}
+              </h2>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setRulesLanguage(rulesLanguage === 'en' ? 'zh' : 'en')}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 border border-slate-600 transition-colors"
+                >
+                  {rulesLanguage === 'en' ? '中文' : 'EN'}
+                </button>
+                <button
+                  onClick={() => setShowRulesModal(false)}
+                  className="p-2 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors"
+                  aria-label="Close"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="space-y-4 text-sm text-slate-300 pr-2 pb-4 custom-scrollbar overflow-y-auto flex-1">
               {rulesLanguage === 'en' ? (
                 <>
                   <div className="space-y-3">
@@ -281,65 +369,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Center: Game Board area */}
-        <div className="flex-1 flex flex-col items-center w-full order-1 lg:order-2 min-h-0 flex-shrink">
-          <div className="flex justify-between w-full max-w-sm mb-4 px-2">
-            <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
-              currentPlayer === 'B' ? "bg-sky-900/30 border-sky-500/50 text-sky-200" : "border-transparent text-slate-500 opacity-60")}>
-              <Cpu size={18} />
-              <span className="font-semibold">{isAIEnabled ? "AI (Blue)" : "P2 (Blue)"}</span>
-              <span className="bg-slate-800 px-2 rounded ml-1 text-xs">{pieceCounts.B}</span>
-            </div>
-            
-            <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
-              currentPlayer === 'A' ? "bg-rose-900/30 border-rose-500/50 text-rose-200" : "border-transparent text-slate-500 opacity-60")}>
-              <span className="bg-slate-800 px-2 rounded mr-1 text-xs">{pieceCounts.A}</span>
-              <span className="font-semibold">You (Red)</span>
-              <User size={18} />
-            </div>
-          </div>
-
-          <Board 
-            board={board} 
-            currentPlayer={currentPlayer}
-            selectedPos={selectedPos}
-            validMoves={validMoves}
-            onCellClick={handleCellClick}
-            isAiThinking={isAiThinking}
-            lastMove={lastMove}
-          />
-
-          {/* Controls */}
-          <div className="flex gap-4 mt-8">
-             <button 
-              onClick={resetGame}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
-            >
-              <RefreshCw size={16} /> Restart
-            </button>
-            <button 
-              onClick={undoMove}
-              disabled={history.length === 0 || winner !== null}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
-            >
-              <Undo2 size={16} /> Undo
-            </button>
-            <button 
-              onClick={() => setIsAIEnabled(!isAIEnabled)}
-              className={clsx(
-                "flex items-center gap-2 px-4 py-2 rounded-lg transition-colors border font-medium text-sm",
-                isAIEnabled 
-                  ? "bg-indigo-900/40 border-indigo-500/50 text-indigo-200" 
-                  : "bg-slate-800 border-slate-700 text-slate-400"
-              )}
-            >
-              <Cpu size={16} /> {isAIEnabled ? "AI: On" : "AI: Off"}
-            </button>
-          </div>
-        </div>
-
-      </div>
+      )}
 
       {/* Winner Modal */}
       {winner && (
