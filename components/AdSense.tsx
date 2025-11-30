@@ -19,18 +19,25 @@ const AdSense: React.FC<AdSenseProps> = ({
   const adPushed = useRef(false);
 
   useEffect(() => {
-    if (!adRef.current || adPushed.current) return;
+    if (!adRef.current || adPushed.current || !adSlot) return;
 
     try {
-      // Check if adsbygoogle is available
-      if (typeof window.adsbygoogle !== 'undefined') {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-        adPushed.current = true;
-      }
+      // Wait for adsbygoogle script to load, then push the ad
+      const initAd = () => {
+        if (typeof window.adsbygoogle !== 'undefined') {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          adPushed.current = true;
+        } else {
+          // If script not loaded yet, wait a bit and try again
+          setTimeout(initAd, 100);
+        }
+      };
+      
+      initAd();
     } catch (error) {
       console.error('AdSense error:', error);
     }
-  }, []);
+  }, [adSlot]);
 
   return (
     <div 

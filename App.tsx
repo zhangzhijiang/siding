@@ -200,7 +200,8 @@ const App: React.FC = () => {
         <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
           <div className="w-full">
             <AdSense 
-              adFormat="vertical"
+              adSlot="9296977491"
+              adFormat="auto"
               fullWidthResponsive={true}
               className="min-h-[250px]"
             />
@@ -268,7 +269,8 @@ const App: React.FC = () => {
         <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
           <div className="w-full">
             <AdSense 
-              adFormat="vertical"
+              adSlot="9296977491"
+              adFormat="auto"
               fullWidthResponsive={true}
               className="min-h-[250px]"
             />
