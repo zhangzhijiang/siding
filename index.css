@@ -1,0 +1,90 @@
+/* App styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Safe area top - keeps content away from status bar/notch */
+.safe-area-top {
+  padding-top: max(env(safe-area-inset-top), 8px);
+}
+
+/* Safe area bottom - keeps content away from home indicator */
+.safe-area-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}
+
+/* Safe area sides - for notched devices */
+.safe-area-left {
+  padding-left: max(env(safe-area-inset-left), 0px);
+}
+
+.safe-area-right {
+  padding-right: max(env(safe-area-inset-right), 0px);
+}
+
+/* Ensure content doesn't overflow on mobile */
+@media (max-width: 640px) {
+  .safe-area-top {
+    padding-top: max(env(safe-area-inset-top), 12px);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 12px);
+  }
+  
+  /* Prevent horizontal overflow on mobile */
+  * {
+    max-width: 100%;
+  }
+  
+  /* Ensure flex items don't overflow */
+  .flex {
+    min-width: 0;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.8);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.9);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.8) rgba(30, 41, 59, 0.5);
+}

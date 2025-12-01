@@ -28,7 +28,7 @@ const Board: React.FC<BoardProps> = ({
   const positions = ['12.5%', '37.5%', '62.5%', '87.5%'];
 
   return (
-    <div className="relative p-8 bg-[#EBC383] rounded shadow-2xl border-4 border-[#8B4513] select-none w-full max-w-[450px] aspect-square">
+    <div className="relative p-4 sm:p-6 lg:p-8 bg-[#EBC383] rounded shadow-2xl border-2 sm:border-4 border-[#8B4513] select-none w-full max-w-[450px] aspect-square overflow-hidden">
       
       {/* Wood Texture */}
       <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] pointer-events-none mix-blend-multiply"></div>

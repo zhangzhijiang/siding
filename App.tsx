@@ -169,7 +169,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen max-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 relative overflow-hidden safe-area">
+    <div className="min-h-screen max-h-screen bg-slate-900 flex flex-col items-center justify-start px-2 sm:px-4 pb-2 sm:pb-4 relative overflow-hidden">
       
       {/* Background Ambience */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -177,24 +177,24 @@ const App: React.FC = () => {
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl"></div>
       </div>
 
-      <header className="mb-4 text-center z-10 flex-shrink-0 relative w-full">
-        <div className="flex items-center justify-center gap-4">
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-2 tracking-tight">
-            SiDing <span className="text-slate-500 text-xl lg:text-2xl font-normal ml-2">四顶</span>
+      <header className="mb-2 sm:mb-4 text-center z-10 flex-shrink-0 relative w-full px-2 safe-area-top">
+        <div className="flex items-center justify-center gap-2 sm:gap-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-1 sm:mb-2 tracking-tight">
+            SiDing <span className="text-slate-500 text-lg sm:text-xl lg:text-2xl font-normal ml-1 sm:ml-2">四顶</span>
           </h1>
           <button
             onClick={() => setShowRulesModal(true)}
-            className="mb-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 text-slate-300 transition-colors"
+            className="mb-1 sm:mb-2 p-1.5 sm:p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 text-slate-300 transition-colors"
             title="Play Rules"
           >
-            <Info size={20} />
+            <Info size={18} className="sm:w-5 sm:h-5" />
           </button>
         </div>
-        <p className="text-slate-400 text-xs lg:text-sm">Strategic 4x4 Board Game</p>
+        <p className="text-slate-400 text-xs sm:text-sm">Strategic 4x4 Board Game</p>
       </header>
 
       {/* Main Game Layout */}
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-center justify-center z-10 w-full max-w-7xl mx-auto flex-1 min-h-0 max-h-full overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-6 items-center justify-center z-10 w-full max-w-7xl mx-auto flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-2 sm:px-4 pb-4 sm:pb-6 safe-area-bottom custom-scrollbar">
         
         {/* Left: AdSense Ad */}
         <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
@@ -209,8 +209,8 @@ const App: React.FC = () => {
         </div>
 
         {/* Center: Game Board area */}
-        <div className="flex flex-col items-center w-full max-w-md flex-shrink-0 min-h-0">
-          <div className="flex justify-between w-full max-w-sm mb-4 px-2">
+        <div className="flex flex-col items-center w-full max-w-md flex-shrink-0">
+          <div className="flex justify-between w-full max-w-sm mb-2 sm:mb-4 px-1 sm:px-2">
             <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
               currentPlayer === 'B' ? "bg-sky-900/30 border-sky-500/50 text-sky-200" : "border-transparent text-slate-500 opacity-60")}>
               <Cpu size={18} />
@@ -226,6 +226,16 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Ad Banner - Above Board */}
+          <div className="hidden sm:block w-full max-w-sm mb-2 sm:mb-4 flex-shrink-0 overflow-hidden">
+            <AdSense 
+              adSlot="9296977491"
+              adFormat="horizontal"
+              fullWidthResponsive={true}
+              className="min-h-[90px] max-h-[100px] w-full"
+            />
+          </div>
+
           <Board 
             board={board} 
             currentPlayer={currentPlayer}
@@ -236,8 +246,18 @@ const App: React.FC = () => {
             lastMove={lastMove}
           />
 
-          {/* Controls */}
-          <div className="flex gap-4 mt-8">
+          {/* Ad Banner - Below Board */}
+          <div className="hidden sm:block w-full max-w-sm mt-2 sm:mt-4 flex-shrink-0 overflow-hidden">
+            <AdSense 
+              adSlot="9296977491"
+              adFormat="horizontal"
+              fullWidthResponsive={true}
+              className="min-h-[90px] max-h-[100px] w-full"
+            />
+          </div>
+
+          {/* Controls - Always visible */}
+          <div className="flex gap-2 sm:gap-4 mt-3 sm:mt-4 flex-wrap justify-center flex-shrink-0 w-full z-20">
              <button 
               onClick={resetGame}
               className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
@@ -282,11 +302,11 @@ const App: React.FC = () => {
       {/* Rules Modal */}
       {showRulesModal && (
         <div 
-          className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm safe-area"
           onClick={() => setShowRulesModal(false)}
         >
           <div 
-            className="bg-slate-800 border border-slate-700/50 rounded-xl p-6 lg:p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
+            className="bg-slate-800 border border-slate-700/50 rounded-xl p-4 sm:p-6 lg:p-8 max-w-2xl w-full mx-2 sm:mx-4 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -375,8 +395,8 @@ const App: React.FC = () => {
 
       {/* Winner Modal */}
       {winner && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-600 text-center max-w-sm w-full mx-4 transform transition-all scale-100">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm safe-area">
+          <div className="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-600 text-center max-w-sm w-full mx-2 sm:mx-4 transform transition-all scale-100">
             <Trophy size={48} className="mx-auto text-yellow-400 mb-4" />
             <h2 className="text-3xl font-bold text-white mb-2">
               {winner === 'A' ? "You Won!" : "Opponent Won!"}
