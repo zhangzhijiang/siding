@@ -169,7 +169,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen max-h-screen bg-slate-900 flex flex-col items-center justify-start px-2 sm:px-4 pb-2 sm:pb-4 relative overflow-hidden">
+    <div className="min-h-screen max-h-screen bg-slate-900 flex flex-col items-center justify-start px-2 sm:px-4 relative overflow-hidden">
       
       {/* Background Ambience */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -177,6 +177,7 @@ const App: React.FC = () => {
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl"></div>
       </div>
 
+      {/* Header */}
       <header className="mb-2 sm:mb-4 text-center z-10 flex-shrink-0 relative w-full px-2 safe-area-top">
         <div className="flex items-center justify-center gap-2 sm:gap-4">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-1 sm:mb-2 tracking-tight">
@@ -193,10 +194,10 @@ const App: React.FC = () => {
         <p className="text-slate-400 text-xs sm:text-sm">Strategic 4x4 Board Game</p>
       </header>
 
-      {/* Main Game Layout */}
+      {/* Main Game Layout - Board takes priority */}
       <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-6 items-center justify-center z-10 w-full max-w-7xl mx-auto flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-2 sm:px-4 pb-4 sm:pb-6 safe-area-bottom custom-scrollbar">
         
-        {/* Left: AdSense Ad */}
+        {/* Left: AdSense Ad - Only on desktop, doesn't interfere with board */}
         <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
           <div className="w-full">
             <AdSense 
@@ -208,8 +209,8 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Game Board area */}
-        <div className="flex flex-col items-center w-full max-w-md flex-shrink-0">
+        {/* Center: Game Board area - Always fully visible */}
+        <div className="flex flex-col items-center w-full max-w-md flex-shrink-0 min-w-0">
           <div className="flex justify-between w-full max-w-sm mb-2 sm:mb-4 px-1 sm:px-2">
             <div className={clsx("flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border", 
               currentPlayer === 'B' ? "bg-sky-900/30 border-sky-500/50 text-sky-200" : "border-transparent text-slate-500 opacity-60")}>
@@ -226,16 +227,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Ad Banner - Above Board */}
-          <div className="hidden sm:block w-full max-w-sm mb-2 sm:mb-4 flex-shrink-0 overflow-hidden">
-            <AdSense 
-              adSlot="9296977491"
-              adFormat="horizontal"
-              fullWidthResponsive={true}
-              className="min-h-[90px] max-h-[100px] w-full"
-            />
-          </div>
-
           <Board 
             board={board} 
             currentPlayer={currentPlayer}
@@ -245,16 +236,6 @@ const App: React.FC = () => {
             isAiThinking={isAiThinking}
             lastMove={lastMove}
           />
-
-          {/* Ad Banner - Below Board */}
-          <div className="hidden sm:block w-full max-w-sm mt-2 sm:mt-4 flex-shrink-0 overflow-hidden">
-            <AdSense 
-              adSlot="9296977491"
-              adFormat="horizontal"
-              fullWidthResponsive={true}
-              className="min-h-[90px] max-h-[100px] w-full"
-            />
-          </div>
 
           {/* Controls - Always visible */}
           <div className="flex gap-2 sm:gap-4 mt-3 sm:mt-4 flex-wrap justify-center flex-shrink-0 w-full z-20">
@@ -285,7 +266,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: AdSense Ad */}
+        {/* Right: AdSense Ad - Only on desktop, doesn't interfere with board */}
         <div className="hidden lg:flex w-48 xl:w-64 flex-shrink-0 justify-center items-start pt-8">
           <div className="w-full">
             <AdSense 
@@ -296,7 +277,6 @@ const App: React.FC = () => {
             />
           </div>
         </div>
-
       </div>
 
       {/* Rules Modal */}

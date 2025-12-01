@@ -28,7 +28,7 @@ html, body {
 
 /* Safe area top - keeps content away from status bar/notch */
 .safe-area-top {
-  padding-top: max(env(safe-area-inset-top), 8px);
+  padding-top: max(env(safe-area-inset-top), 16px);
 }
 
 /* Safe area bottom - keeps content away from home indicator */
@@ -48,7 +48,7 @@ html, body {
 /* Ensure content doesn't overflow on mobile */
 @media (max-width: 640px) {
   .safe-area-top {
-    padding-top: max(env(safe-area-inset-top), 12px);
+    padding-top: max(env(safe-area-inset-top), 20px);
   }
   
   .safe-area-bottom {
