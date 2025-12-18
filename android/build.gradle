@@ -33,6 +33,19 @@ allprojects {
                 }
             }
         }
+
+        // Ensure Kotlin compilation targets Java 17 too (fixes plugins compiling with 21)
+        // Use reflection so this build.gradle doesn't hard-require Kotlin classes at configuration time.
+        try {
+            def kotlinCompileTask = project.buildscript.classLoader.loadClass("org.jetbrains.kotlin.gradle.tasks.KotlinCompile")
+            project.tasks.withType(kotlinCompileTask).configureEach { t ->
+                t.kotlinOptions {
+                    jvmTarget = "17"
+                }
+            }
+        } catch (Throwable ignored) {
+            // Kotlin plugin not applied to this subproject
+        }
     }
 }
 

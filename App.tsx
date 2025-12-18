@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { AdMob, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { 
   BoardState, 
   GameState, 
@@ -29,6 +31,48 @@ import {
 import { clsx } from 'clsx';
 
 const App: React.FC = () => {
+  // AdMob IDs (Android)
+  // - Production banner unit:
+  //   ca-app-pub-8396981938969998/8729274278
+  // - Google test banner unit (use in dev):
+  //   ca-app-pub-3940256099942544/6300978111
+  const ADMOB_BANNER_AD_UNIT_ID = import.meta.env.DEV
+    ? 'ca-app-pub-3940256099942544/6300978111'
+    : 'ca-app-pub-8396981938969998/8729274278';
+
+  // Initialize AdMob banner on native Android/iOS
+  useEffect(() => {
+    let cancelled = false;
+
+    const initAds = async () => {
+      if (!Capacitor.isNativePlatform()) return;
+
+      try {
+        await AdMob.initialize();
+        if (cancelled) return;
+
+        await AdMob.showBanner({
+          adId: ADMOB_BANNER_AD_UNIT_ID,
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          margin: 0,
+          isTesting: import.meta.env.DEV,
+        });
+      } catch (e) {
+        // Don't crash the game if ads fail
+        console.warn('AdMob init/showBanner failed:', e);
+      }
+    };
+
+    initAds();
+
+    return () => {
+      cancelled = true;
+      if (!Capacitor.isNativePlatform()) return;
+      AdMob.hideBanner().catch(() => {});
+    };
+  }, []);
+
   // Game State
   const [board, setBoard] = useState<BoardState>(createInitialBoard());
   const [currentPlayer, setCurrentPlayer] = useState<Player>('A');
