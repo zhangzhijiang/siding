@@ -34,11 +34,21 @@ const App: React.FC = () => {
   // AdMob IDs (Android)
   // - Production banner unit:
   //   ca-app-pub-8396981938969998/8729274278
-  // - Google test banner unit (use in dev):
-  //   ca-app-pub-3940256099942544/6300978111
+  // - Production interstitial unit:
+  //   ca-app-pub-8396981938969998/9683440900
+  // - Google test units (use in dev):
+  //   Banner: ca-app-pub-3940256099942544/6300978111
+  //   Interstitial: ca-app-pub-3940256099942544/1033173712
   const ADMOB_BANNER_AD_UNIT_ID = import.meta.env.DEV
     ? 'ca-app-pub-3940256099942544/6300978111'
     : 'ca-app-pub-8396981938969998/8729274278';
+  
+  const ADMOB_INTERSTITIAL_AD_UNIT_ID = import.meta.env.DEV
+    ? 'ca-app-pub-3940256099942544/1033173712'
+    : 'ca-app-pub-8396981938969998/9683440900';
+  
+  // Track games played for interstitial ad frequency
+  const [gamesPlayed, setGamesPlayed] = useState(0);
 
   // Initialize AdMob banner on native Android/iOS
   useEffect(() => {
@@ -72,6 +82,22 @@ const App: React.FC = () => {
       AdMob.hideBanner().catch(() => {});
     };
   }, []);
+
+  // Function to show interstitial ad
+  const showInterstitialAd = useCallback(async () => {
+    if (!Capacitor.isNativePlatform()) return;
+    
+    try {
+      await AdMob.prepareInterstitial({
+        adId: ADMOB_INTERSTITIAL_AD_UNIT_ID,
+        isTesting: import.meta.env.DEV,
+      });
+      await AdMob.showInterstitial();
+    } catch (e) {
+      // Don't crash the game if ads fail
+      console.warn('AdMob showInterstitial failed:', e);
+    }
+  }, [ADMOB_INTERSTITIAL_AD_UNIT_ID]);
 
   // Game State
   const [board, setBoard] = useState<BoardState>(createInitialBoard());
@@ -169,6 +195,12 @@ const App: React.FC = () => {
     const gameWinner = checkWinCondition(newBoard);
     if (gameWinner) {
       setWinner(gameWinner);
+      // Increment games played and show interstitial ad after every game
+      setGamesPlayed(prev => prev + 1);
+      // Show interstitial ad when game ends (after a short delay)
+      setTimeout(() => {
+        showInterstitialAd();
+      }, 1000);
     } else {
       setCurrentPlayer(prev => prev === 'A' ? 'B' : 'A');
     }

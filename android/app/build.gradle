@@ -20,7 +20,7 @@ android {
         applicationId "com.idatagear.siding"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
+        versionCode 10
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -67,17 +67,12 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    
+    // Google Mobile Ads SDK for AdMob
+    implementation 'com.google.android.gms:play-services-ads:23.0.0'
 }
 
 apply from: 'capacitor.build.gradle'
-
-// Override Capacitor's Java 21 requirement with Java 17
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-}
 
 try {
     def servicesJSON = file('google-services.json')
